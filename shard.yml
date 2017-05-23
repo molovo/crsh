@@ -1,0 +1,19 @@
+name: crsh
+version: 0.1.0
+
+dependencies:
+  fancyline:
+    github: Papierkorb/fancyline
+  crayon:
+    github: molovo/crayon
+
+authors:
+  - James Dinsdale <hi@molovo.co>
+
+targets:
+  crsh:
+    main: src/crsh.cr
+
+crystal: 0.22.0
+
+license: MIT

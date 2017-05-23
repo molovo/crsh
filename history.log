@@ -1,0 +1,34 @@
+ls -la
+cd /
+ls -la
+puts 1
+get_command
+get_command "Test"
+ls -la
+whatis
+whatis test
+git status
+git log --decorate
+whatis git
+ls -la
+ls-la
+ls -la
+echo 1
+echo 2
+echo test
+ls -la
+test
+ls -la
+[[ 1 -eq 0 ]]
+echo $([[ 1 -eq 0 ]])
+echo $([[ 1 -eq 1 ]])
+ls -la
+gws
+gwD
+ls -la
+ls
+source Test
+ls
+source test
+ls -la
+source test
