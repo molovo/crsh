@@ -32,3 +32,114 @@ ls
 source test
 ls -la
 source test
+cd test
+ls -la
+cd lib
+ls -la
+cd lib
+ls -la
+cd lib
+ls -la
+cd src
+ls -la
+cd lib
+ls -la
+cd ../src
+ls -la
+cd crsh
+ls -la
+cd builtins/
+ls -la
+cd ../../../
+ls -la
+cd src
+ls -la
+cd ..
+ls -la
+cd
+ls -la
+pwd
+cd -
+ls -la
+pwd
+cd -
+pwd
+ls -la
+cd lib
+cd -
+ls -la
+cd -
+cd ..
+ls -la
+cd
+ls -la
+cd -
+ls -la
+cd lib
+ls -la
+cd ..
+ls -la
+cd src
+ls -la
+cd ..
+ls -la
+cd spec
+ls -la
+ls
+ls -la
+l
+ls
+ls -la
+ls
+ls -la
+ls  
+ls
+ls -la
+echo "      end
+ls -la
+ls -ls
+ls -la
+pwd
+ls -la
+echo $PATH
+ls -la
+pwd
+cd src
+cd ..
+ls -la
+pwd
+ls -la
+cd src/crsh.cr
+ls -la
+cd crsh
+ls -la
+cd crsh
+ls -la
+cd src
+ls -la
+cd ..
+ls -la
+cd src/crsh
+ls -la
+pwd
+ls -la
+pwd
+ls
+cd src/crsh
+pwd
+cd ../..
+type cd
+ls -la
+cd 
+ls -la
+gws
+git status
+git status --long
+ls -la
+pwd
+ls -la
+pwd
+cat README.md
+ls
+ls -la
+cd test

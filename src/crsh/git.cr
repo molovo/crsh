@@ -1,7 +1,13 @@
 module Crsh
   class Git
     def self.info
+      nil unless self.is_in_repo
+
       "#{self.branch}#{self.status}"
+    end
+
+    def self.is_in_repo
+      system("command git rev-parse --is-inside-work-tree &>/dev/null")
     end
 
     def self.branch

@@ -3,52 +3,56 @@ require "crayon"
 require "./crsh/*"
 
 module Crsh
-  @@output = Crayon::Text.new
+  @@shell = Shell.new
 
-  def self.output
-    @@output
+  def self.shell
+    @@shell
   end
 
-  fancy = Fancyline.new # Build a shell object
   puts "Press Ctrl-D to quit."
 
-  fancy.display.add do |ctx, line, yielder|
-    # We underline command names
-    line = line.gsub(/^\w+/, &.colorize.mode(:underline))
-    line = line.gsub(/(\|\s*)(\w+)/) do
-      "#{$1}#{$2.colorize.mode(:underline)}"
-    end
-
-    # And turn --arguments green
-    line = line.gsub(/--?\w+/, &.colorize(:green))
-
-    # Then we call the next middleware with the modified line
-    yielder.call ctx, line
-  end
-
-  fancy.actions.set Fancyline::Key::Control::CtrlH do |ctx|
+  @@shell.fancy.actions.set Fancyline::Key::Control::CtrlH do |ctx|
     if command = Input.get_command(ctx) # Figure out the current command
       system("man #{command}")          # And open the man-page of it
     end
   end
 
-  fancy.sub_info.add do |ctx, yielder|
+  @@shell.fancy.sub_info.add do |ctx, yielder|
     lines = yielder.call(ctx) # First run the next part of the middleware chain
 
-    if command = Input.get_command(ctx) # Grab the command
-      help_line = `whatis #{command} 2> /dev/null`.lines.first?
+    str = Input.get_command(ctx)
+    if str.nil?
+      next lines
+    end
 
-      if help_line
-        w = `tput cols`.lines.first? || 80
-        help_line = help_line[0, w.to_i32] # Limit to screen width
-        lines << help_line if help_line    # Display it if we got something
+    if help = @@shell.state.help_cache[str]?
+      lines << help
+      next lines
+    end
+
+    if command = @@shell.builtin(str) # Grab the command
+      line = "#{command.name} -- #{command.description}"
+      lines << line
+      @@shell.state.help_cache[str] = line
+      next lines
+    end
+
+    if @@shell.manpath.has? str
+      manpage = `man #{str} 2>/dev/null | head -10`
+      manpage.lines.each_cons(2) do |parts|
+        if parts.first === "NNAAMMEE"
+          line = parts.last.strip
+          lines << line
+          @@shell.state.help_cache[str] = line
+          next lines
+        end
       end
     end
 
     lines # Return the lines so far
   end
 
-  fancy.autocomplete.add do |ctx, range, word, yielder|
+  @@shell.fancy.autocomplete.add do |ctx, range, word, yielder|
     completions = yielder.call(ctx, range, word)
 
     # The `word` may not suffice for us here.  It'd be fine however for command
@@ -81,21 +85,13 @@ module Crsh
   if File.exists? HISTFILE # Does it exist?
     puts "  Reading history from #{HISTFILE}"
     File.open(HISTFILE, "r") do |io| # Open a handle
-      fancy.history.load io          # And load it
+      @@shell.fancy.history.load io  # And load it
     end
   end
 
-  prompt = Prompt.new
-
-  begin # Get rid of stacktrace on ^C
-    while input = fancy.readline(prompt.print)
-      Call.new(input)
-    end
-  rescue err : Fancyline::Interrupt
-    puts "Bye."
-  end
+  @@shell.start
 
   File.open(HISTFILE, "w") do |io| # So open it writable
-    fancy.history.save io          # And save.  That's it.
+    @@shell.fancy.history.save io  # And save.  That's it.
   end
 end

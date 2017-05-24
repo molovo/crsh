@@ -2,20 +2,21 @@ require "./builtins/*"
 
 module Crsh
   class Call
-    @@builtins = {
-      "source" => Builtins::Source,
-    }
-
-    def initialize(line : String)
+    def initialize(line : String, @shell : Shell)
       command = get_command line
 
-      if @@builtins.has_key? command
+      if builtin = @shell.builtin command
         args = get_args line
-        @@builtins[command].call args
+        builtin.call args, @shell
         return
       end
 
-      system(line)
+      if @shell.path.has? command
+        system(line)
+        return
+      end
+
+      puts "Command not found".colorize(:red)
     end
 
     def get_command(line : String) : String?
