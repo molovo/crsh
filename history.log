@@ -143,3 +143,27 @@ cat README.md
 ls
 ls -la
 cd test
+ls -la
+set --help
+set
+config autosuggestions
+set autosuggestions 1
+config autosuggestions
+set autosuggestions true
+config autosuggestions
+set test.testing.tada true
+config test
+config autosuggestions
+set autosuggestions true
+config autosuggestions
+set test.testing.test true
+config test
+config autosuggestions
+set autosuggestions true
+config autosuggestions
+set autosuggestions true
+config autosuggestions
+ls -la
+gws
+pwd
+gws

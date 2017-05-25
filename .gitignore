@@ -2,3 +2,7 @@
 /lib/
 /bin/
 /.shards/
+
+# Ignore compiled file
+/crsh
+history.log

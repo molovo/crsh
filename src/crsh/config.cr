@@ -1,17 +1,25 @@
 module Crsh
   class Config
-    @values = {
-      "autosuggestions"     => false,
-      "syntax_highlighting" => true,
+    alias Store = Hash(String, Value)
+    alias Value = String | Int32 | Bool | Array(Value)
+
+    @values : Store = {
+      "autosuggestions"     => true.as(Value),
+      "syntax_highlighting" => true.as(Value),
     }
 
     def initialize(@shell : Shell)
     end
 
     macro method_missing(call)
-      if @values.has_key?({{ call.name.id.stringify }})
-        @values[{{ call.name.id.stringify }}]
-      end
+      {% method = call.name.id.stringify %}
+      {% if call.name.id.last == "=" %}
+        @values[{{ method }}] = {{ *call.args }}
+      {% else %}
+        if @values.has_key?({{ method }})
+          @values[{{ method }}]
+        end
+      {% end %}
     end
   end
 end

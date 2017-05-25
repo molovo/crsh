@@ -18,6 +18,8 @@ module Crsh
 
       color = nil
       case true
+      when @shell.alias cmd
+        color = :yellow
       when @shell.builtin cmd
         color = :magenta
       when @shell.path.has? cmd

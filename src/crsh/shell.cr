@@ -2,6 +2,8 @@ module Crsh
   class Shell
     BUILTINS = {
       "cd"     => Builtins::Cd.new,
+      "config" => Builtins::Config.new,
+      "set"    => Builtins::Set.new,
       "source" => Builtins::Source.new,
     }
 
@@ -15,11 +17,20 @@ module Crsh
     getter state = State.new
     getter fancy = Fancyline.new
 
+    getter aliases = {
+      "gws" => "git status --short",
+    }
+
     def initialize
       @config = Config.new(self)
       @prompt = Prompt.new(self)
       @highlighter = Highlighter.new(self)
       @suggestion_provider = SuggestionProvider.new(self)
+    end
+
+    def alias(name : String?) : String?
+      nil if name.nil?
+      @aliases[name]?
     end
 
     def builtin(name : String?) : Command?

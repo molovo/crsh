@@ -26,14 +26,21 @@ module Crsh
     end
 
     if help = @@shell.state.help_cache[str]?
-      lines << help
+      lines << help.colorize.dark_gray.to_s
       next lines
     end
 
-    if command = @@shell.builtin(str) # Grab the command
-      line = "#{command.name} -- #{command.description}"
-      lines << line
+    if als = @@shell.alias str
+      line = "alias #{str} => #{als}"
       @@shell.state.help_cache[str] = line
+      lines << line.colorize.dark_gray.to_s
+      next lines
+    end
+
+    if command = @@shell.builtin str # Grab the command
+      line = "builtin #{command.name} -- #{command.description}"
+      @@shell.state.help_cache[str] = line
+      lines << line.colorize.dark_gray.to_s
       next lines
     end
 
@@ -41,15 +48,16 @@ module Crsh
       manpage = `man #{str} 2>/dev/null | head -10`
       manpage.lines.each_cons(2) do |parts|
         if parts.first === "NNAAMMEE"
-          line = parts.last.strip
-          lines << line
+          line = "command #{parts.last.strip}"
           @@shell.state.help_cache[str] = line
+          lines << line.colorize.dark_gray.to_s
           next lines
         end
       end
     end
 
-    lines # Return the lines so far
+    lines << "" # Clear the line as nothing matched
+    lines
   end
 
   @@shell.fancy.autocomplete.add do |ctx, range, word, yielder|

@@ -5,6 +5,8 @@ module Crsh
 
       @shell.fancy.display.add do |ctx, line, yielder|
         stripped = line.colorize.toggle(false).to_s
+        yielder.call ctx, line unless stripped
+
         suggestion = get_suggestion stripped
 
         line = "#{line}#{suggestion.colorize.dark_gray.to_s.lstrip(stripped)}"
